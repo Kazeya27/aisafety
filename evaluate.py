@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 from torchmetrics.functional import structural_similarity_index_measure as ssim
 from dataset import Cifar10Clean500
-from models import SimpleDLA
+from models import SimpleDLA, ResNet18
 from PIL import Image
 from pdb import set_trace
 import numpy as np
@@ -19,7 +19,8 @@ class Evaluator:
         self.models = models
         self.checkpoints = checkpoints
         self.model_dict = {
-            'simpledla': SimpleDLA
+            'simpledla': SimpleDLA,
+            'resnet18': ResNet18
         }
         self.device = device
 
@@ -81,7 +82,7 @@ class Evaluator:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--exp_id", type=int, default=0)
-    parser.add_argument("--models", type=str, nargs="+", default=["simpledla"])
+    parser.add_argument("--models", type=str, nargs="+", default=["resnet18"])
     parser.add_argument("--checkpoints", type=str, nargs="+", default=["1"])
     parser.add_argument("--cuda", type=int, default=0)
     args = parser.parse_args()

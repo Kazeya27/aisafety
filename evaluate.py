@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 from torchmetrics.functional import structural_similarity_index_measure as ssim
 from dataset import Cifar10Clean500
-from models import CnnBench, ResnetBench, SimpleDLA
+from models import SimpleDLA
 from PIL import Image
 from pdb import set_trace
 import numpy as np
@@ -19,8 +19,6 @@ class Evaluator:
         self.models = models
         self.checkpoints = checkpoints
         self.model_dict = {
-            "cnn": CnnBench,
-            "resnet": ResnetBench,
             'simpledla': SimpleDLA
         }
         self.device = device

@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 from torchmetrics.functional import structural_similarity_index_measure as ssim
 from dataset import Cifar10Clean500
-from models import CnnBench, ResnetBench
+from models import CnnBench, ResnetBench, SimpleDLA
 from PIL import Image
 from pdb import set_trace
 import numpy as np
@@ -20,15 +20,16 @@ class Evaluator:
         self.checkpoints = checkpoints
         self.model_dict = {
             "cnn": CnnBench,
-            "resnet": ResnetBench
+            "resnet": ResnetBench,
+            'simpledla': SimpleDLA
         }
         self.device = device
 
     def load_model(self, model_name, ckp_path):
-        model = self.model_dict[model_name](10, model_name)
+        model = self.model_dict[model_name]()
+        model = torch.nn.DataParallel(model)
         ckp_path = os.path.join("checkpoints", model_name, f"epoch{ckp_path}.pth")
-        model.load(ckp_path)
-        model = model.model()
+        model.load_state_dict(torch.load(ckp_path)['net'])
         model.to(self.device)
         return model
 
@@ -82,8 +83,8 @@ class Evaluator:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--exp_id", type=int, default=0)
-    parser.add_argument("--models", type=str, nargs="+", default=["cnn"])
-    parser.add_argument("--checkpoints", type=str, nargs="+", default=["115"])
+    parser.add_argument("--models", type=str, nargs="+", default=["simpledla"])
+    parser.add_argument("--checkpoints", type=str, nargs="+", default=["1"])
     parser.add_argument("--cuda", type=int, default=0)
     args = parser.parse_args()
 
